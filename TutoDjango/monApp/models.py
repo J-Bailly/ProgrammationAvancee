@@ -1,3 +1,4 @@
+from datetime import date
 from django.db import models
 
 class Categorie(models.Model):
@@ -16,7 +17,7 @@ class Produit(models.Model):
     intituleProd = models.CharField(max_length=200)
     prixUnitaireProd = models.DecimalField(max_digits=10, decimal_places=2)
     # Relation CIF : chaque produit appartient à 1 catégorie (0,N côté catégorie 1,1 côté produit)→
-    dateFabrication = models.DateField(null=True, auto_now=True)
+    dateFabProd = models.DateField(default=date.today)
     categorie = models.ForeignKey(Categorie, on_delete=models.CASCADE, related_name="categorie",null=True, blank=True)
     rayons = models.ManyToManyField(
         "Rayon",
