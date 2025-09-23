@@ -3,7 +3,7 @@ from django.shortcuts import render
 # Create your views here.
 
 from django.http import Http404, HttpResponse, JsonResponse
-from .models import Produit, Categorie
+from .models import Produit, Categorie, Rayon, Status
 
 def home(request):
     if request.GET and request.GET["test"]:
@@ -42,16 +42,22 @@ def ListProduits(request):
 
 def ListCategories(request):
     ctgrs = Categorie.objects.all()
-    liste = "<ul>"
-    for categorie in ctgrs:
-        liste += f"""<li> {categorie.nomCat} </li>"""
-    liste += "</ul>"
-    return HttpResponse(liste)
+    return render(request, 'monApp/list_categories.html',{'ctgrs': ctgrs})
+    # liste = "<ul>"
+    # for categorie in ctgrs:
+    #     liste += f"""<li> {categorie.nomCat} </li>"""
+    # liste += "</ul>"
+    # return HttpResponse(liste)
 
 def ListStatut(request):
-    prdts = Produit.objects.all()
-    liste = "<ul>"
-    for produit in prdts:
-        liste += f"""<li> {produit.status.lbStatus} </li>"""
-    liste += "</ul>"
-    return HttpResponse(liste)
+    status = Status.objects.all()
+    return render(request, 'monApp/list_status.html',{'statuts': status})
+    # liste = "<ul>"
+    # for produit in prdts:
+    #     liste += f"""<li> {produit.status.lbStatus} </li>"""
+    # liste += "</ul>"
+    # return HttpResponse(liste)
+
+def ListRayons(request):
+    rayons = Rayon.objects.all()
+    return render(request, 'monApp/list_rayons.html',{'rayons': rayons})

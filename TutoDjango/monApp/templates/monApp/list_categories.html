@@ -1,24 +1,31 @@
-<html>
-    <head>
-        <title>Mon app DJANGO</title>
-    </head>
-    <body>
-        <h1>Hello mes produits !</h1>
-        <p>
+{% extends 'monApp/base.html' %}
+{% block menu %}
+    <h1>Liste des categories</h1>
+{% endblock %}
+    {% block contenu %}
+        <table class="table">
+        <thead>
+            <th>Id</th>
+            <th>Nom Catégorie</th>
+        </thead>
+        <tbody>
+            {% for ctgr in ctgrs %}
+            <tr>
+                <td>{{ ctgr.idCat }} </td>
+                <td>{{ ctgr.nomCat }} </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        </table>
+            <p>
             J'ai
-            {% if prdts|length < 5 %}
+            {% if ctgrs|length < 5 %}
             peu de
-            {% elif prdts|length < 10 %}
+            {% elif ctgrs|length < 10 %}
             quelques
             {% else %}
             beaucoup de
             {% endif %}
-            produits préférés.
-        </p>
-        <ul>
-            {% for prdt in prdts %}
-                <li>{{ prdt.intituleProd | upper}}</li>
-            {% endfor %}
-        </ul>
-    </body>
-</html>
+            catégories.
+            </p>
+    {% endblock %}

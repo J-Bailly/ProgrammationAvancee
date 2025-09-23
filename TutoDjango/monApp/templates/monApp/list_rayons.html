@@ -1,24 +1,20 @@
-<html>
-    <head>
-        <title>Mon app DJANGO</title>
-    </head>
-    <body>
-        <h1>Hello mes produits !</h1>
-        <p>
-            J'ai
-            {% if prdts|length < 5 %}
-            peu de
-            {% elif prdts|length < 10 %}
-            quelques
-            {% else %}
-            beaucoup de
-            {% endif %}
-            produits préférés.
-        </p>
-        <ul>
-            {% for prdt in prdts %}
-                <li>{{ prdt.intituleProd | upper}}</li>
-            {% endfor %}
-        </ul>
-    </body>
-</html>
+{% extends 'monApp/base.html' %}
+{% block menu %}
+    <h1>Liste des rayons</h1>
+    {% endblock %}
+    {% block contenu %}
+    <table class="table">
+    <thead>
+        <th>Id</th>
+        <th>Nom rayon</th>
+    </thead>
+    <tbody>
+        {% for rayon in rayons %}
+        <tr>
+            <td>{{ rayon.idRayon }} </td>
+            <td>{{ rayon.nomRayon }} </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+{% endblock %}

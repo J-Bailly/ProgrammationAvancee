@@ -1,24 +1,9 @@
 <html>
     <head>
-        <title>Mon app DJANGO</title>
+        <title>Mes Contacts</title>
     </head>
     <body>
-        <h1>Hello mes produits !</h1>
-        <p>
-            J'ai
-            {% if prdts|length < 5 %}
-            peu de
-            {% elif prdts|length < 10 %}
-            quelques
-            {% else %}
-            beaucoup de
-            {% endif %}
-            produits préférés.
-        </p>
-        <ul>
-            {% for prdt in prdts %}
-                <li>{{ prdt.intituleProd | upper}}</li>
-            {% endfor %}
-        </ul>
+        <h1>Hello mes contacts !</h1>
+        <p>Voila mes contacts : </p>
     </body>
 </html>
