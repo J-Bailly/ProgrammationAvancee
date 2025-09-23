@@ -4,11 +4,8 @@ from django.shortcuts import render
 
 from django.http import Http404, HttpResponse, JsonResponse
 from .models import Produit, Categorie, Rayon, Status
+from django.views.generic import *
 
-def home(request):
-    if request.GET and request.GET["test"]:
-        raise Http404
-    return HttpResponse("Bonjour Monde!")
 
 def accueil(request,param):
     return HttpResponse("<h1>Hello " + param + " ! You're connected</h1>")
@@ -61,3 +58,36 @@ def ListStatut(request):
 def ListRayons(request):
     rayons = Rayon.objects.all()
     return render(request, 'monApp/list_rayons.html',{'rayons': rayons})
+
+class HomeView(TemplateView):
+    template_name = "monApp/page_home.html"
+
+    def post(self, request, **kwargs):
+        return render(request, self.template_name)
+    
+    def get_context_data(self, **kwargs):
+        context = super(HomeView, self).get_context_data(**kwargs)
+        context['titreh1'] = "Hello DJANGO"
+        return context
+    
+class AboutView(TemplateView):
+    template_name = "monApp/page_home.html"
+    
+    def get_context_data(self, **kwargs):
+        context = super(AboutView, self).get_context_data(**kwargs)
+        context['titreh1'] = "About us..."
+        return context
+
+    def post(self, request, **kwargs):
+        return render(request, self.template_name)
+
+class ContactView(TemplateView):
+    template_name = "monApp/page_home.html"
+    
+    def get_context_data(self, **kwargs):
+        context = super(ContactView, self).get_context_data(**kwargs)
+        context['titreh1'] = "Contact us..."
+        return context
+
+    def post(self, request, **kwargs):
+        return render(request, self.template_name)
