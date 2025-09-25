@@ -1,0 +1,21 @@
+{% extends 'monApp/base.html' %}
+
+{% block menu %}
+<h1>{{titremenu}}</h1>
+{% endblock %}
+
+{% block contenu %}
+<h2>{{ ctgr.nomCat }}</h2>
+
+<ul>
+    <li>Référence catégorie : {{ctgr.idCat }} </li>
+    <li>Nom catégorie : {{ ctgr.nomCat }} </li>
+    {% for prdt in ctgr.produits.all %}
+        <tr>
+            <td><a href="{% url 'dtl_prdt' prdt.refProd %}">{{ prdt.intituleProd }}</a></td>
+        </tr>
+    {% endfor %}
+</ul>
+<br>
+<a href="{% url 'lst_prdts' %}">Retour à la liste des produits</a>
+{% endblock %}

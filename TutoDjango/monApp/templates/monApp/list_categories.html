@@ -1,6 +1,7 @@
 {% extends 'monApp/base.html' %}
+
 {% block menu %}
-    <h1>Liste des categories</h1>
+    <h1> {{ titremenu }} </h1>
 {% endblock %}
     {% block contenu %}
         <table class="table">
@@ -12,20 +13,8 @@
             {% for ctgr in ctgrs %}
             <tr>
                 <td>{{ ctgr.idCat }} </td>
-                <td>{{ ctgr.nomCat }} </td>
+                <td><a href="{% url 'dtl_ctgr' ctgr.idCat %}">{{ ctgr.nomCat }}</a></td>
             </tr>
             {% endfor %}
         </tbody>
-        </table>
-            <p>
-            J'ai
-            {% if ctgrs|length < 5 %}
-            peu de
-            {% elif ctgrs|length < 10 %}
-            quelques
-            {% else %}
-            beaucoup de
-            {% endif %}
-            catégories.
-            </p>
     {% endblock %}
