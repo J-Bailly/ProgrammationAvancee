@@ -5,15 +5,11 @@
 {% endblock %}
 
 {% block contenu %}
-<h2>{{ prdt.intituleProd }}</h2>
+<h2>{{ rayon.nomRayon }}</h2>
 
 <ul>
-    <li>Référence produit : {{prdt.refProd }} </li>
-    <li>Prix unitaire HT : {{ prdt.prixUnitaireProd }} </li>
-    <li>Date de fabrication : {{ prdt.dateFabProd }} </li>
-    <li>Catégorie : {{ prdt.categorie }} </li>
-    <li>Statut : {{ prdt.status }}</li>
+    <li>Référence rayon : {{rayon.idRayon }} </li>
 </ul>
 <br>
-<a href="{% url 'lst_prdts' %}">Retour à la liste des produits</a>
+<a href="{% url 'lst_rayons' %}">Retour à la liste des rayons</a>
 {% endblock %}

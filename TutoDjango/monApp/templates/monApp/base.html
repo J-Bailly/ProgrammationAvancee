@@ -19,6 +19,27 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'lst_prdts' %}">Produits</a>
                         </li>
+                        <li>
+                            <a class="nav-link" href="{% url 'lst_ctgrs' %}">Catégories</a>
+                        </li>
+                        <li>
+                            <a class="nav-link" href="{% url 'lst_status' %}">Statuts</a>
+                        </li>
+                        <li>
+                            <a class="nav-link" href="{% url 'lst_rayons' %}">Rayons</a>
+                        </li>
+                        {% if user.is_authenticated %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'logout' %}">Déconnexion</a>
+                            </li>
+                        {%else%}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'login' %}">Connexion</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'register' %}">Inscription</a>
+                            </li>
+                        {%endif%}
                     </ul>
                 </div>
             </nav >

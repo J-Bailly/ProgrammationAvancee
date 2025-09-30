@@ -9,10 +9,10 @@
         <th>Nom statut</th>
     </thead>
     <tbody>
-        {% for statut in statuts %}
+        {% for statut in status %}
         <tr>
-            <td>{{ statut.idStatus }} </td>
-            <td>{{ statut.lbStatus }} </td>
+            <td><a href="{% url 'dtl_status' statut.idStatus %}">{{ statut.idStatus }}</a></td>
+            <td><a href="{% url 'dtl_status' statut.idStatus %}">{{ statut.lbStatus }}</a></td>
         </tr>
         {% endfor %}
     </tbody>
