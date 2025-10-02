@@ -40,5 +40,5 @@ class Rayon(models.Model):
 class Contenir(models.Model):
     Rayon = models.ForeignKey(Rayon, on_delete=models.CASCADE, related_name="rayon")
     Produit = models.ForeignKey(Produit, on_delete=models.CASCADE, related_name="produit")
-    Qte = models.IntegerField()
+    Qte = models.IntegerField(default=1)
 

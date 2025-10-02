@@ -25,15 +25,5 @@
         {% endfor %}
     </tbody>
     </table>
-        <p>
-        J'ai
-        {% if prdts|length < 5 %}
-        peu de
-        {% elif prdts|length < 10 %}
-        quelques
-        {% else %}
-        beaucoup de
-        {% endif %}
-        produits préférés.
-        </p>
+    <a href="{% url 'crt_prdt' %}">Créer un nouveau produit</a>
 {% endblock %}

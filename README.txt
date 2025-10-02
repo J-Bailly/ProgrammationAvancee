@@ -6,3 +6,4 @@
 7eme séance : Fin du TP2 + TD3 jusqu'à page 4 (a faire le a vous de jouer)
 8eme séance : Page 8 TD3 (en train de faire a vous de jouer)
 9eme séance : Fin TD3 voir si bien fini le dernier truc
+10eme séance : FIn page 8 du TP3

@@ -1,10 +1,11 @@
+from django.forms import BaseModelForm
 from django.shortcuts import render
 
 # Create your views here.
 
 from django.http import Http404, HttpResponse, JsonResponse
 
-from .forms import ContactUsForm
+from .forms import ContactUsForm, ProduitForm
 from .models import Produit, Categorie, Rayon, Status
 from django.views.generic import *
 from django.contrib.auth.views import *
@@ -19,33 +20,6 @@ def accueil(request,param):
 
 def ma_vue(request):
     return JsonResponse({'foo': 'bar'})
-
-
-def ListProduits(request):
-    prdts = Produit.objects.all()
-    return render(request, 'monApp/list_produits.html',{'prdts': prdts})
-
-def ListCategories(request):
-    ctgrs = Categorie.objects.all()
-    return render(request, 'monApp/list_categories.html',{'ctgrs': ctgrs})
-    # liste = "<ul>"
-    # for categorie in ctgrs:
-    #     liste += f"""<li> {categorie.nomCat} </li>"""
-    # liste += "</ul>"
-    # return HttpResponse(liste)
-
-def ListStatut(request):
-    status = Status.objects.all()
-    return render(request, 'monApp/list_status.html',{'statuts': status})
-    # liste = "<ul>"
-    # for produit in prdts:
-    #     liste += f"""<li> {produit.status.lbStatus} </li>"""
-    # liste += "</ul>"
-    # return HttpResponse(liste)
-
-def ListRayons(request):
-    rayons = Rayon.objects.all()
-    return render(request, 'monApp/list_rayons.html',{'rayons': rayons})
 
 class HomeView(TemplateView):
     template_name = "monApp/page_home.html"
@@ -108,7 +82,11 @@ class HomeParamView(TemplateView):
     def post(self, request, **kwargs):
         context = self.get_context_data(**kwargs)
         return render(request, self.template_name, context)
-    
+
+
+
+
+
 class ProduitListView(ListView):
     model = Produit
     template_name = "monApp/list_produits.html"
@@ -131,6 +109,48 @@ class ProduitDetailView(DetailView):
         context = super(ProduitDetailView, self).get_context_data(**kwargs)
         context['titremenu'] = "Détail du produit"
         return context
+    
+def ProduitCreate(request):
+    if request.method == 'POST':
+        form = ProduitForm(request.POST)
+        if form.is_valid():
+            prdt = form.save()
+            return redirect('dtl_prdt', prdt.refProd)
+    else:
+        form = ProduitForm()
+    return render(request, "monApp/create_produit.html", {'form': form})
+
+class ProduitCreateView(CreateView):
+    model = Produit
+    form_class=ProduitForm
+    template_name = "monApp/create_produit.html"
+    
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        prdt = form.save()
+        return redirect('dtl_prdt', prdt.refProd)
+
+class ProduitUpdateView(UpdateView):
+    model = Produit
+    form_class=ProduitForm
+    template_name = "monApp/update_produit.html"
+    
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        prdt = form.save()
+        return redirect('dtl_prdt', prdt.refProd)
+
+def ProduitUpdate(request, pk):
+    prdt = Produit.objects.get(refProd=pk)
+    if request.method == 'POST':
+        form = ProduitForm(request.POST, instance=prdt)
+        if form.is_valid():
+            # mettre à jour le produit existant dans la base de données
+            form.save()
+            # rediriger vers la page détaillée du produit que nous venons de mettre à jour
+            return redirect('dtl_prdt', prdt.refProd)
+    else:
+        form = ProduitForm(instance=prdt)
+    return render(request,'monApp/update_produit.html', {'form': form})
+
 
 class CategorieListView(ListView):
     model = Categorie
@@ -151,7 +171,10 @@ class CategorieDetailView(DetailView):
         context = super(CategorieDetailView, self).get_context_data(**kwargs)
         context['titremenu'] = "Détail de la catégorie"
         return context
-    
+
+
+
+
 
 class StatusListView(ListView):
     model = Status
@@ -174,6 +197,9 @@ class StatusDetailView(DetailView):
         return context
     
 
+
+
+
 class RayonListView(ListView):
     model = Rayon
     template_name = "monApp/list_rayons.html"
@@ -193,7 +219,11 @@ class RayonDetailView(DetailView):
         context = super(RayonDetailView, self).get_context_data(**kwargs)
         context['titremenu'] = "Détail du rayon"
         return context
-    
+
+
+
+
+
 class ConnectView(LoginView):
     template_name = 'monApp/page_login.html'
     
@@ -206,7 +236,7 @@ class ConnectView(LoginView):
             return render(request, 'monApp/page_home.html', {'param': lgn, 'message': "You're connected"})
         else:
             return render(request, 'monApp/page_register.html')
-        
+
 class RegisterView(TemplateView):
     template_name = 'monApp/page_register.html'
 
@@ -220,7 +250,7 @@ class RegisterView(TemplateView):
             return render(request, 'monApp/page_login.html')
         else:
             return render(request, 'monApp/page_register.html')
-        
+
 class DisconnectView(TemplateView):
     template_name = 'monApp/page_logout.html'
 

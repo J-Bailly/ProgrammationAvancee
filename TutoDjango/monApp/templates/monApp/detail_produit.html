@@ -15,5 +15,6 @@
     <li>Statut : {{ prdt.status }}</li>
 </ul>
 <br>
+<a href="{% url 'prdt_chng' prdt.refProd %}">Modifier</a>
 <a href="{% url 'lst_prdts' %}">Retour à la liste des produits</a>
 {% endblock %}
