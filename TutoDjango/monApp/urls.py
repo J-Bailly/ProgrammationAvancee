@@ -17,6 +17,7 @@ urlpatterns = [
     path("produit/<pk>/" ,views.ProduitDetailView.as_view(), name="dtl_prdt"),
     path("produit/",views.ProduitCreateView.as_view(), name="crt_prdt"),
     path("produit/<pk>/update/",views.ProduitUpdateView.as_view(), name="prdt_chng"),
+    path("produit/<pk>/delete/",views.ProduitDeleteView.as_view(), name="prdt_dlt"),
 
     path("listeCategories/",views.CategorieListView.as_view(), name="lst_ctgrs"),
     path("categorie/<pk>/",views.CategorieDetailView.as_view(), name="dtl_ctgr"),

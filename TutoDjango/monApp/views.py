@@ -4,6 +4,7 @@ from django.shortcuts import render
 # Create your views here.
 
 from django.http import Http404, HttpResponse, JsonResponse
+from django.urls import reverse_lazy
 
 from .forms import ContactUsForm, ProduitForm
 from .models import Produit, Categorie, Rayon, Status
@@ -151,6 +152,20 @@ def ProduitUpdate(request, pk):
         form = ProduitForm(instance=prdt)
     return render(request,'monApp/update_produit.html', {'form': form})
 
+class ProduitDeleteView(DeleteView):
+    model = Produit
+    template_name = "monApp/delete_produit.html"
+    success_url = reverse_lazy('lst_prdts')
+
+def produit_delete(request, pk):
+    prdt = Produit.objects.get(refProd=pk) # nécessaire pour GET et pour POST
+    if request.method == 'POST':
+        # supprimer le produit de la base de données
+        prdt.delete()
+        # rediriger vers la liste des produit
+        return redirect('prdt_dlt')
+    # pas besoin de « else » ici. Si c'est une demande GET, continuez simplement
+    return render(request, 'monApp/delete_produit.html', {'object': prdt})             
 
 class CategorieListView(ListView):
     model = Categorie
