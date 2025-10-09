@@ -1,3 +1,4 @@
+from itertools import count
 from django.forms import BaseModelForm
 from django.shortcuts import render
 
@@ -14,6 +15,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import *
 from django.core.mail import send_mail
 from django.shortcuts import redirect
+from django.db.models import Count
 
 
 def accueil(request,param):
@@ -172,9 +174,13 @@ class CategorieListView(ListView):
     template_name = "monApp/list_categories.html"
     context_object_name = "ctgrs"
     
+    def get_queryset(self):
+        # Annoter chaque catégorie avec le nombre de produits liés
+        return Categorie.objects.annotate(nb_produits=Count('categorie'))
+    
     def get_context_data(self, **kwargs):
         context = super(CategorieListView, self).get_context_data(**kwargs)
-        context['titremenu'] = "Liste des catégories"
+        context['titremenu'] = "Liste de mes catégories"
         return context
     
 class CategorieDetailView(DetailView):
@@ -182,9 +188,14 @@ class CategorieDetailView(DetailView):
     template_name = "monApp/detail_categorie.html"
     context_object_name = "ctgr"
 
+    def get_queryset(self):
+        # Annoter chaque catégorie avec le nombre de produits liés
+        return Categorie.objects.annotate(nb_produits=Count('categorie'))
+    
     def get_context_data(self, **kwargs):
         context = super(CategorieDetailView, self).get_context_data(**kwargs)
         context['titremenu'] = "Détail de la catégorie"
+        context['prdts'] = self.object.categorie.all()
         return context
 
 def CategorieCreate(request):

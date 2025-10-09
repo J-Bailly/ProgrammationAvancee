@@ -10,9 +10,7 @@
 <ul>
     <li>Référence statut : {{status.idStatus }} </li>
 </ul>
-<br>
-<a href="{% url 'chng_status' status.idStatus %}">Modifier</a>
-<a href="{% url 'dlt_status' status.idStatus %}">Supprimer</a>
-<br>
-<a href="{% url 'lst_status' %}">Retour à la liste des statuts</a>
+    <a href="{% url 'chng_status' status.idStatus %}" class="btn btn-warning mt-2">Modifier</a>
+    <a href="{% url 'dlt_status' status.idStatus %}" class="btn btn-danger mt-2">Supprimer</a>
+    <a href="{% url 'lst_prdts'%}" class="btn btn-info mt-2">Retour</a>
 {% endblock %}

@@ -13,9 +13,14 @@
         <tr>
             <td><a href="{% url 'dtl_rayon' rayon.idRayon %}">{{ rayon.idRayon }}</a></td>
             <td><a href="{% url 'dtl_rayon' rayon.idRayon %}">{{ rayon.nomRayon }}</a></td>
+            <td>
+                <a href="{% url 'dtl_rayon' rayon.idRayon %}" class="btn btn-primary mt-2">Détails</a>
+                <a href="{% url 'chng_rayon' rayon.idRayon %}" class="btn btn-warning mt-2">Modifier</a>
+                <a href="{% url 'dlt_rayon' rayon.idRayon %}" class="btn btn-danger mt-2">Supprimer</a>
+            </td>
         </tr>
         {% endfor %}
     </tbody>
     </table>
-    <a href="{% url 'crt_rayon' %}">Créer un nouveau rayon</a>
+    <a href="{% url 'crt_rayon' %}" class="btn btn-primary mt-2">Créer un nouveau rayon</a>
 {% endblock %}

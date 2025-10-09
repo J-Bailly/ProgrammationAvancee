@@ -8,3 +8,4 @@
 9eme séance : Fin TD3 voir si bien fini le dernier truc
 10eme séance : FIn page 8 du TP3
 11eme séance : Page 11 TP3 Fait le form de suppression reste le categorie
+12eme séance : TP3 Fini + Fait TD4 jusqu'à l'amélioration du détail de catégorie à faire pour status 

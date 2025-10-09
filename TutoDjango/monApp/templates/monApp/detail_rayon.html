@@ -10,9 +10,7 @@
 <ul>
     <li>Référence rayon : {{rayon.idRayon }} </li>
 </ul>
-<br>
-<a href="{% url 'chng_rayon' rayon.idRayon %}">Modifier</a>
-<a href="{% url 'dlt_rayon' rayon.idRayon %}">Supprimer</a>
-<br>
-<a href="{% url 'lst_rayons' %}">Retour à la liste des rayons</a>
+    <a href="{% url 'chng_rayon' rayon.idRayon %}" class="btn btn-warning mt-2">Modifier</a>
+    <a href="{% url 'dlt_rayon' rayon.idRayon %}" class="btn btn-danger mt-2">Supprimer</a>
+    <a href="{% url 'lst_rayons'%}" class="btn btn-info mt-2">Retour</a>
 {% endblock %}

@@ -13,9 +13,14 @@
         <tr>
             <td><a href="{% url 'dtl_status' statut.idStatus %}">{{ statut.idStatus }}</a></td>
             <td><a href="{% url 'dtl_status' statut.idStatus %}">{{ statut.lbStatus }}</a></td>
+            <td>
+                <a href="{% url 'dtl_status' statut.idStatus %}" class="btn btn-primary mt-2">Détails</a>
+                <a href="{% url 'chng_status' statut.idStatus %}" class="btn btn-warning mt-2">Modifier</a>
+                <a href="{% url 'dlt_status' statut.idStatus %}" class="btn btn-danger mt-2">Supprimer</a>
+            </td>
         </tr>
         {% endfor %}
     </tbody>
     </table>
-    <a href="{% url 'crt_status' %}">Créer un nouveau status</a>
+    <a href="{% url 'crt_status' %}" class="btn btn-primary mt-2">Créer un nouveau status</a>
 {% endblock %}

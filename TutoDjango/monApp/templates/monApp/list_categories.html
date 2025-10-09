@@ -4,19 +4,26 @@
     <h1> {{ titremenu }} </h1>
 {% endblock %}
     {% block contenu %}
-        <table class="table">
+    <table class="table">
         <thead>
             <th>Id</th>
-            <th>Nom Catégorie</th>
+            <th>Nom catégorie</th>
+            <th>Nombre de Produits</th>
         </thead>
-        <tbody>
-            {% for ctgr in ctgrs %}
-            <tr>
-                <td><a href="{% url 'dtl_ctgr' ctgr.idCat %}">{{ ctgr.idCat }}</a></td>
+    <tbody>
+    {% for ctgr in ctgrs %}
+        <tr>
+            <td><a href="{% url 'dtl_ctgr' ctgr.idCat %}">{{ ctgr.idCat }}</a></td>
                 <td><a href="{% url 'dtl_ctgr' ctgr.idCat %}">{{ ctgr.nomCat }}</a></td>
-            </tr>
-            {% endfor %}
-        </tbody>
-        </table>
-        <a href="{% url 'crt_rayon' %}">Créer un nouveau rayon</a>
+                <td><a href="{% url 'dtl_ctgr' ctgr.idCat %}">{{ ctgr.nb_produits }}</a></td>
+                <td>
+                <a href="{% url 'dtl_ctgr' ctgr.idCat %}" class="btn btn-primary mt-2">Détails</a>
+                <a href="{% url 'chng_ctgr' ctgr.idCat %}" class="btn btn-warning mt-2">Modifier</a>
+                <a href="{% url 'dlt_ctgr' ctgr.idCat %}" class="btn btn-danger mt-2">Supprimer</a>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+        <a href="{% url 'crt_rayon' %}" class="btn btn-primary mt-2">Créer un nouveau rayon</a>
     {% endblock %}

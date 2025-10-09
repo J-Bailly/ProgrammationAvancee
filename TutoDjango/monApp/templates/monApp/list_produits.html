@@ -17,13 +17,18 @@
         <tr>
             <td><a href="{% url 'dtl_prdt' prdt.refProd %}">{{ prdt.refProd }}</a></td>
             <td><a href="{% url 'dtl_prdt' prdt.refProd %}">{{ prdt.intituleProd }}</a></td>
-            <td>{{ prdt.prixUnitaireProd }} </td>
-            <td>{{ prdt.dateFabProd }} </td>
-            <td>{{ prdt.categorie }} </td>
-            <td>{{ prdt.status }} </td>
+            <td><a href="{% url 'dtl_prdt' prdt.refProd %}">{{ prdt.prixUnitaireProd }}</a></td>
+            <td><a href="{% url 'dtl_prdt' prdt.refProd %}">{{ prdt.dateFabProd }}</a></td>
+            <td><a href="{% url 'dtl_prdt' prdt.refProd %}">{{ prdt.categorie }}</a></td>
+            <td><a href="{% url 'dtl_prdt' prdt.refProd %}">{{ prdt.status }}</a></td>
+            <td>
+                <a href="{% url 'dtl_prdt' prdt.refProd %}" class="btn btn-primary mt-2">Détails</a>
+                <a href="{% url 'chng_prdt' prdt.refProd %}" class="btn btn-warning mt-2">Modifier</a>
+                <a href="{% url 'dlt_prdt' prdt.refProd %}" class="btn btn-danger mt-2">Supprimer</a>
+            </td>
         </tr>
         {% endfor %}
     </tbody>
     </table>
-    <a href="{% url 'crt_prdt' %}">Créer un nouveau produit</a>
+    <a href="{% url 'crt_prdt' %}" class="btn btn-primary mt-2">Créer un nouveau produit</a>
 {% endblock %}
