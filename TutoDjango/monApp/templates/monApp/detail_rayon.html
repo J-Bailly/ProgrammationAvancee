@@ -11,5 +11,8 @@
     <li>Référence rayon : {{rayon.idRayon }} </li>
 </ul>
 <br>
+<a href="{% url 'chng_rayon' rayon.idRayon %}">Modifier</a>
+<a href="{% url 'dlt_rayon' rayon.idRayon %}">Supprimer</a>
+<br>
 <a href="{% url 'lst_rayons' %}">Retour à la liste des rayons</a>
 {% endblock %}

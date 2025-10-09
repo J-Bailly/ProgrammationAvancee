@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.http import Http404, HttpResponse, JsonResponse
 from django.urls import reverse_lazy
 
-from .forms import ContactUsForm, ProduitForm
+from .forms import ContactUsForm, ProduitForm, CategorieForm, RayonForm, StatusForm
 from .models import Produit, Categorie, Rayon, Status
 from django.views.generic import *
 from django.contrib.auth.views import *
@@ -163,7 +163,7 @@ def produit_delete(request, pk):
         # supprimer le produit de la base de données
         prdt.delete()
         # rediriger vers la liste des produit
-        return redirect('prdt_dlt')
+        return redirect('dlt_prdt')
     # pas besoin de « else » ici. Si c'est une demande GET, continuez simplement
     return render(request, 'monApp/delete_produit.html', {'object': prdt})             
 
@@ -186,6 +186,62 @@ class CategorieDetailView(DetailView):
         context = super(CategorieDetailView, self).get_context_data(**kwargs)
         context['titremenu'] = "Détail de la catégorie"
         return context
+
+def CategorieCreate(request):
+    if request.method == 'POST':
+        form = CategorieForm(request.POST)
+        if form.is_valid():
+            ctgr = form.save()
+            return redirect('dtl_ctgr', ctgr.idCat)
+    else:
+        form = ProduitForm()
+    return render(request, "monApp/create_categorie.html", {'form': form})
+
+class CategorieCreateView(CreateView):
+    model = Categorie
+    form_class= CategorieForm
+    template_name = "monApp/create_categorie.html"
+    
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        ctgr = form.save()
+        return redirect('dtl_ctgr', ctgr.idCat)
+
+class CategorieUpdateView(UpdateView):
+    model = Categorie
+    form_class=CategorieForm
+    template_name = "monApp/update_categorie.html"
+    
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        ctgr = form.save()
+        return redirect('dtl_ctgr', ctgr.idCat)
+
+def CategorieUpdate(request, pk):
+    ctgr = Categorie.objects.get(idCat=pk)
+    if request.method == 'POST':
+        form = CategorieForm(request.POST, instance=ctgr)
+        if form.is_valid():
+            # mettre à jour le produit existant dans la base de données
+            form.save()
+            # rediriger vers la page détaillée du produit que nous venons de mettre à jour
+            return redirect('dtl_ctgr', ctgr.idCat)
+    else:
+        form = CategorieForm(instance=ctgr)
+    return render(request,'monApp/update_categorie.html', {'form': form})
+
+class CategorieDeleteView(DeleteView):
+    model = Categorie
+    template_name = "monApp/delete_categorie.html"
+    success_url = reverse_lazy('lst_ctgrs')
+
+def categorie_delete(request, pk):
+    ctgr = Categorie.objects.get(idCat=pk) # nécessaire pour GET et pour POST
+    if request.method == 'POST':
+        # supprimer le produit de la base de données
+        ctgr.delete()
+        # rediriger vers la liste des produit
+        return redirect('dlt_ctgr')
+    # pas besoin de « else » ici. Si c'est une demande GET, continuez simplement
+    return render(request, 'monApp/delete_categorie.html', {'object': ctgr})
 
 
 
@@ -211,6 +267,62 @@ class StatusDetailView(DetailView):
         context['titremenu'] = "Détail du statut"
         return context
     
+def StatusCreate(request):
+    if request.method == 'POST':
+        form = StatusForm(request.POST)
+        if form.is_valid():
+            status = form.save()
+            return redirect('dtl_status', status.idStatus)
+    else:
+        form = StatusForm()
+    return render(request, "monApp/create_status.html", {'form': form})
+
+class StatusCreateView(CreateView):
+    model = Status
+    form_class= StatusForm
+    template_name = "monApp/create_status.html"
+    
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        status = form.save()
+        return redirect('dtl_status', status.idStatus)
+
+class StatusUpdateView(UpdateView):
+    model = Status
+    form_class=StatusForm
+    template_name = "monApp/update_status.html"
+    
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        status = form.save()
+        return redirect('dtl_status', status.idStatus)
+
+def StatusUpdate(request, pk):
+    status = Status.objects.get(idStatus=pk)
+    if request.method == 'POST':
+        form = StatusForm(request.POST, instance=status)
+        if form.is_valid():
+            # mettre à jour le produit existant dans la base de données
+            form.save()
+            # rediriger vers la page détaillée du produit que nous venons de mettre à jour
+            return redirect('dtl_status', status.idStatus)
+    else:
+        form = StatusForm(instance=status)
+    return render(request,'monApp/update_status.html', {'form': form})
+
+class StatusDeleteView(DeleteView):
+    model = Status
+    template_name = "monApp/delete_status.html"
+    success_url = reverse_lazy('lst_status')
+
+def status_delete(request, pk):
+    status = Status.objects.get(idStatus=pk) # nécessaire pour GET et pour POST
+    if request.method == 'POST':
+        # supprimer le produit de la base de données
+        status.delete()
+        # rediriger vers la liste des produit
+        return redirect('dlt_status')
+    # pas besoin de « else » ici. Si c'est une demande GET, continuez simplement
+    return render(request, 'monApp/delete_status.html', {'object': status})
+
 
 
 
@@ -234,6 +346,62 @@ class RayonDetailView(DetailView):
         context = super(RayonDetailView, self).get_context_data(**kwargs)
         context['titremenu'] = "Détail du rayon"
         return context
+
+def RayonCreate(request):
+    if request.method == 'POST':
+        form = RayonForm(request.POST)
+        if form.is_valid():
+            rayon = form.save()
+            return redirect('dtl_rayon', rayon.idRayon)
+    else:
+        form = RayonForm()
+    return render(request, "monApp/create_rayon.html", {'form': form})
+
+class RayonCreateView(CreateView):
+    model = Rayon
+    form_class= RayonForm
+    template_name = "monApp/create_rayon.html"
+    
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        rayon = form.save()
+        return redirect('dtl_rayon', rayon.idRayon)
+
+class RayonUpdateView(UpdateView):
+    model = Rayon
+    form_class=RayonForm
+    template_name = "monApp/update_rayon.html"
+    
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        rayon = form.save()
+        return redirect('dtl_rayon', rayon.idRayon)
+
+def RayonUpdate(request, pk):
+    rayon = Rayon.objects.get(idRayon=pk)
+    if request.method == 'POST':
+        form = RayonForm(request.POST, instance=rayon)
+        if form.is_valid():
+            # mettre à jour le produit existant dans la base de données
+            form.save()
+            # rediriger vers la page détaillée du produit que nous venons de mettre à jour
+            return redirect('dtl_rayon', rayon.idRayon)
+    else:
+        form = RayonForm(instance=rayon)
+    return render(request,'monApp/update_rayon.html', {'form': form})
+
+class RayonDeleteView(DeleteView):
+    model = Rayon
+    template_name = "monApp/delete_rayon.html"
+    success_url = reverse_lazy('lst_rayons')
+
+def rayon_delete(request, pk):
+    rayon = Rayon.objects.get(idRayon=pk) # nécessaire pour GET et pour POST
+    if request.method == 'POST':
+        # supprimer le produit de la base de données
+        rayon.delete()
+        # rediriger vers la liste des produit
+        return redirect('dlt_rayon')
+    # pas besoin de « else » ici. Si c'est une demande GET, continuez simplement
+    return render(request, 'monApp/delete_rayon.html', {'object': rayon})
 
 
 

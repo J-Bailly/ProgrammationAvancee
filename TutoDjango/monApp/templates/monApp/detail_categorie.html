@@ -17,5 +17,8 @@
     {% endfor %}
 </ul>
 <br>
+<a href="{% url 'chng_ctgr' ctgr.idCat %}">Modifier</a>
+<a href="{% url 'dlt_ctgr' ctgr.idCat %}">Supprimer</a>
+<br>
 <a href="{% url 'lst_ctgrs' %}">Retour à la liste des catégories</a>
 {% endblock %}
