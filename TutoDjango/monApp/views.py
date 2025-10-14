@@ -8,14 +8,16 @@ from django.http import Http404, HttpResponse, JsonResponse
 from django.urls import reverse_lazy
 
 from .forms import ContactUsForm, ProduitForm, CategorieForm, RayonForm, StatusForm
-from .models import Produit, Categorie, Rayon, Status
+from .models import Contenir, Produit, Categorie, Rayon, Status
 from django.views.generic import *
 from django.contrib.auth.views import *
 from django.contrib.auth.models import User
 from django.contrib.auth import *
 from django.core.mail import send_mail
 from django.shortcuts import redirect
-from django.db.models import Count
+from django.db.models import Count, Prefetch
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
 
 
 def accueil(request,param):
@@ -95,8 +97,14 @@ class ProduitListView(ListView):
     template_name = "monApp/list_produits.html"
     context_object_name = "prdts"
 
-    # def get_queryset(self ) :
-    #     return Produit.objects.order_by("prixUnitaireProd")
+    def get_queryset(self):
+        # Surcouche pour filtrer les résultats en fonction de la recherche
+        # Récupérer le terme de recherche depuis la requête GET
+        query = self.request.GET.get('search')
+        if query:
+            return Produit.objects.filter(intituleProd__icontains=query).select_related('categorie').select_related('status')
+        # Charge les catégories et les statuts en même temps
+        return Produit.objects.select_related('categorie').select_related('status')
     
     def get_context_data(self, **kwargs):
         context = super(ProduitListView, self).get_context_data(**kwargs)
@@ -112,7 +120,17 @@ class ProduitDetailView(DetailView):
         context = super(ProduitDetailView, self).get_context_data(**kwargs)
         context['titremenu'] = "Détail du produit"
         return context
+
+@method_decorator(login_required(login_url='/monApp/login/'), name='dispatch')
+class ProduitCreateView(CreateView):
+    model = Produit
+    form_class=ProduitForm
+    template_name = "monApp/create_produit.html"
     
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        prdt = form.save()
+        return redirect('dtl_prdt', prdt.refProd)
+
 def ProduitCreate(request):
     if request.method == 'POST':
         form = ProduitForm(request.POST)
@@ -123,15 +141,7 @@ def ProduitCreate(request):
         form = ProduitForm()
     return render(request, "monApp/create_produit.html", {'form': form})
 
-class ProduitCreateView(CreateView):
-    model = Produit
-    form_class=ProduitForm
-    template_name = "monApp/create_produit.html"
-    
-    def form_valid(self, form: BaseModelForm) -> HttpResponse:
-        prdt = form.save()
-        return redirect('dtl_prdt', prdt.refProd)
-
+@method_decorator(login_required(login_url='/monApp/login/'), name='dispatch')
 class ProduitUpdateView(UpdateView):
     model = Produit
     form_class=ProduitForm
@@ -154,6 +164,7 @@ def ProduitUpdate(request, pk):
         form = ProduitForm(instance=prdt)
     return render(request,'monApp/update_produit.html', {'form': form})
 
+@method_decorator(login_required(login_url='/monApp/login/'), name='dispatch')
 class ProduitDeleteView(DeleteView):
     model = Produit
     template_name = "monApp/delete_produit.html"
@@ -169,12 +180,21 @@ def produit_delete(request, pk):
     # pas besoin de « else » ici. Si c'est une demande GET, continuez simplement
     return render(request, 'monApp/delete_produit.html', {'object': prdt})             
 
+
+
+
+
 class CategorieListView(ListView):
     model = Categorie
     template_name = "monApp/list_categories.html"
     context_object_name = "ctgrs"
     
     def get_queryset(self):
+        # Surcouche pour filtrer les résultats en fonction de la recherche
+        # Récupérer le terme de recherche depuis la requête GET
+        query = self.request.GET.get('search')
+        if query:
+            return Categorie.objects.filter(nomCat__icontains=query)
         # Annoter chaque catégorie avec le nombre de produits liés
         return Categorie.objects.annotate(nb_produits=Count('categorie'))
     
@@ -198,6 +218,16 @@ class CategorieDetailView(DetailView):
         context['prdts'] = self.object.categorie.all()
         return context
 
+@method_decorator(login_required(login_url='/monApp/login/'), name='dispatch')
+class CategorieCreateView(CreateView):
+    model = Categorie
+    form_class= CategorieForm
+    template_name = "monApp/create_categorie.html"
+    
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        ctgr = form.save()
+        return redirect('dtl_ctgr', ctgr.idCat)
+
 def CategorieCreate(request):
     if request.method == 'POST':
         form = CategorieForm(request.POST)
@@ -208,15 +238,7 @@ def CategorieCreate(request):
         form = ProduitForm()
     return render(request, "monApp/create_categorie.html", {'form': form})
 
-class CategorieCreateView(CreateView):
-    model = Categorie
-    form_class= CategorieForm
-    template_name = "monApp/create_categorie.html"
-    
-    def form_valid(self, form: BaseModelForm) -> HttpResponse:
-        ctgr = form.save()
-        return redirect('dtl_ctgr', ctgr.idCat)
-
+@method_decorator(login_required(login_url='/monApp/login/'), name='dispatch')
 class CategorieUpdateView(UpdateView):
     model = Categorie
     form_class=CategorieForm
@@ -239,6 +261,7 @@ def CategorieUpdate(request, pk):
         form = CategorieForm(instance=ctgr)
     return render(request,'monApp/update_categorie.html', {'form': form})
 
+@method_decorator(login_required(login_url='/monApp/login/'), name='dispatch')
 class CategorieDeleteView(DeleteView):
     model = Categorie
     template_name = "monApp/delete_categorie.html"
@@ -263,21 +286,45 @@ class StatusListView(ListView):
     template_name = "monApp/list_status.html"
     context_object_name = "status"
 
+    def get_queryset(self):
+        # Surcouche pour filtrer les résultats en fonction de la recherche
+        # Récupérer le terme de recherche depuis la requête GET
+        query = self.request.GET.get('search')
+        if query:
+            return Status.objects.filter(lbStatus__icontains=query)
+        # Annoter chaque status avec le nombre de produits liés
+        return Status.objects.annotate(nb_produits=Count('status'))
+    
     def get_context_data(self, **kwargs):
         context = super(StatusListView, self).get_context_data(**kwargs)
         context['titremenu'] = "Liste des statuts"
         return context
-    
+
 class StatusDetailView(DetailView):
     model = Status
     template_name = "monApp/detail_status.html"
     context_object_name = "status"
 
+    def get_queryset(self):
+        # Annoter chaque catégorie avec le nombre de produits liés
+        return Status.objects.annotate(nb_produits=Count('status'))
+    
     def get_context_data(self, **kwargs):
         context = super(StatusDetailView, self).get_context_data(**kwargs)
         context['titremenu'] = "Détail du statut"
+        context['prdts'] = self.object.status.all()
         return context
+
+@method_decorator(login_required(login_url='/monApp/login/'), name='dispatch')
+class StatusCreateView(CreateView):
+    model = Status
+    form_class= StatusForm
+    template_name = "monApp/create_status.html"
     
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        status = form.save()
+        return redirect('dtl_status', status.idStatus)
+
 def StatusCreate(request):
     if request.method == 'POST':
         form = StatusForm(request.POST)
@@ -288,15 +335,7 @@ def StatusCreate(request):
         form = StatusForm()
     return render(request, "monApp/create_status.html", {'form': form})
 
-class StatusCreateView(CreateView):
-    model = Status
-    form_class= StatusForm
-    template_name = "monApp/create_status.html"
-    
-    def form_valid(self, form: BaseModelForm) -> HttpResponse:
-        status = form.save()
-        return redirect('dtl_status', status.idStatus)
-
+@method_decorator(login_required(login_url='/monApp/login/'), name='dispatch')
 class StatusUpdateView(UpdateView):
     model = Status
     form_class=StatusForm
@@ -319,6 +358,7 @@ def StatusUpdate(request, pk):
         form = StatusForm(instance=status)
     return render(request,'monApp/update_status.html', {'form': form})
 
+@method_decorator(login_required(login_url='/monApp/login/'), name='dispatch')
 class StatusDeleteView(DeleteView):
     model = Status
     template_name = "monApp/delete_status.html"
@@ -343,11 +383,28 @@ class RayonListView(ListView):
     template_name = "monApp/list_rayons.html"
     context_object_name = "rayons"
 
+    def get_queryset(self):
+        # Surcouche pour filtrer les résultats en fonction de la recherche
+        # Récupérer le terme de recherche depuis la requête GET
+        query = self.request.GET.get('search')
+        if query:
+            return Rayon.objects.filter(nomRayon__icontains=query).prefetch_related(Prefetch("rayon", queryset=Contenir.objects.select_related("Produit")))
+        # Précharge tous les "contenir" de chaque rayon,
+        # et en même temps le produit de chaque contenir
+        return Rayon.objects.prefetch_related(Prefetch("rayon", queryset=Contenir.objects.select_related("Produit")))
+
     def get_context_data(self, **kwargs):
-        context = super(RayonListView, self).get_context_data(**kwargs)
-        context['titremenu'] = "Liste des rayons"
+        context = super().get_context_data(**kwargs)
+        context['titremenu'] = "Liste de mes rayons"
+        ryns_dt = []
+        for rayon in context['rayons']:
+            total = 0
+            for contenir in rayon.rayon.all():
+                total += contenir.Produit.prixUnitaireProd * contenir.Qte
+            ryns_dt.append({'rayon': rayon, 'total_stock': total})
+        context['ryns_dt'] = ryns_dt
         return context
-    
+
 class RayonDetailView(DetailView):
     model = Rayon
     template_name = "monApp/detail_rayon.html"
@@ -356,7 +413,33 @@ class RayonDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(RayonDetailView, self).get_context_data(**kwargs)
         context['titremenu'] = "Détail du rayon"
+        prdts_dt = []
+        total_rayon = 0
+        total_nb_produit = 0
+
+        for contenir in self.object.rayon.all():
+            total_produit = contenir.Produit.prixUnitaireProd * contenir.Qte
+            prdts_dt.append({ 'produit': contenir.Produit, 
+                             'qte': contenir.Qte, 
+                             'prix_unitaire': contenir.Produit.prixUnitaireProd, 
+                             'total_produit': total_produit})
+
+            total_rayon += total_produit
+            total_nb_produit += contenir.Qte
+        context['prdts_dt'] = prdts_dt
+        context['total_rayon'] = total_rayon
+        context['total_nb_produit'] = total_nb_produit
         return context
+
+@method_decorator(login_required(login_url='/monApp/login/'), name='dispatch')
+class RayonCreateView(CreateView):
+    model = Rayon
+    form_class= RayonForm
+    template_name = "monApp/create_rayon.html"
+    
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        rayon = form.save()
+        return redirect('dtl_rayon', rayon.idRayon)
 
 def RayonCreate(request):
     if request.method == 'POST':
@@ -368,15 +451,7 @@ def RayonCreate(request):
         form = RayonForm()
     return render(request, "monApp/create_rayon.html", {'form': form})
 
-class RayonCreateView(CreateView):
-    model = Rayon
-    form_class= RayonForm
-    template_name = "monApp/create_rayon.html"
-    
-    def form_valid(self, form: BaseModelForm) -> HttpResponse:
-        rayon = form.save()
-        return redirect('dtl_rayon', rayon.idRayon)
-
+@method_decorator(login_required(login_url='/monApp/login/'), name='dispatch')
 class RayonUpdateView(UpdateView):
     model = Rayon
     form_class=RayonForm
@@ -399,6 +474,7 @@ def RayonUpdate(request, pk):
         form = RayonForm(instance=rayon)
     return render(request,'monApp/update_rayon.html', {'form': form})
 
+@method_decorator(login_required(login_url='/monApp/login/'), name='dispatch')
 class RayonDeleteView(DeleteView):
     model = Rayon
     template_name = "monApp/delete_rayon.html"
