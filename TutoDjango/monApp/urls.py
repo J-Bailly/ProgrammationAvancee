@@ -36,6 +36,10 @@ urlpatterns = [
     path("rayon/",views.RayonCreateView.as_view(), name="crt_rayon"),
     path("rayon/<pk>/update/",views.RayonUpdateView.as_view(), name="chng_rayon"),
     path("rayon/<pk>/delete/",views.RayonDeleteView.as_view(), name="dlt_rayon"),
+    path('rayon/<pk>/cntnr', views.ContenirCreateView.as_view(), name='crt_cntnr'),
+
+    path('contenir/<pk>/update/', views.ContenirUpdateView.as_view(), name='chng_cntnr'),
+    path('contenir/<pk>/delete/', views.ContenirDeleteView.as_view(), name='dlt_cntnr'),
 
     path("home", TemplateView.as_view(template_name="monApp/page_home.html")),
 

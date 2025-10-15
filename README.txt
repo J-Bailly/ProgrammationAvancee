@@ -9,3 +9,4 @@
 10eme séance : FIn page 8 du TP3
 11eme séance : Page 11 TP3 Fait le form de suppression reste le categorie
 12eme séance : TP3 Fini + Fait TD4 jusqu'à l'amélioration du détail de catégorie à faire pour status 
+Travail maison : ContenirCreateView et ContenirDeleteView Reste a faire ContenirUpdateView TD4 page 12

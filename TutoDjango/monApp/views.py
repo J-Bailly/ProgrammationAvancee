@@ -7,8 +7,8 @@ from django.shortcuts import render
 from django.http import Http404, HttpResponse, JsonResponse
 from django.urls import reverse_lazy
 
-from .forms import ContactUsForm, ProduitForm, CategorieForm, RayonForm, StatusForm
-from .models import Produit, Categorie, Rayon, Status
+from .forms import ContactUsForm, ProduitForm, CategorieForm, RayonForm, StatusForm, ContenirForm
+from .models import Produit, Categorie, Rayon, Status, Contenir
 from django.views.generic import *
 from django.contrib.auth.views import *
 from django.contrib.auth.models import User
@@ -94,9 +94,6 @@ class ProduitListView(ListView):
     model = Produit
     template_name = "monApp/list_produits.html"
     context_object_name = "prdts"
-
-    # def get_queryset(self ) :
-    #     return Produit.objects.order_by("prixUnitaireProd")
     
     def get_context_data(self, **kwargs):
         context = super(ProduitListView, self).get_context_data(**kwargs)
@@ -168,6 +165,8 @@ def produit_delete(request, pk):
         return redirect('dlt_prdt')
     # pas besoin de « else » ici. Si c'est une demande GET, continuez simplement
     return render(request, 'monApp/delete_produit.html', {'object': prdt})             
+
+
 
 class CategorieListView(ListView):
     model = Categorie
@@ -256,8 +255,6 @@ def categorie_delete(request, pk):
 
 
 
-
-
 class StatusListView(ListView):
     model = Status
     template_name = "monApp/list_status.html"
@@ -333,8 +330,6 @@ def status_delete(request, pk):
         return redirect('dlt_status')
     # pas besoin de « else » ici. Si c'est une demande GET, continuez simplement
     return render(request, 'monApp/delete_status.html', {'object': status})
-
-
 
 
 
@@ -415,6 +410,56 @@ def rayon_delete(request, pk):
     return render(request, 'monApp/delete_rayon.html', {'object': rayon})
 
 
+
+def ContenirCreate(request):
+    if request.method == 'POST':
+        form = ContenirForm(request.POST)
+        if form.is_valid():
+            ctnr = form.save()
+            return redirect('dtl_cntnr', ctnr.id)
+    else:
+        form = ContenirForm()
+    return render(request, "monApp/create_contenir.html", {'form': form})
+
+class ContenirCreateView(CreateView):
+    model = Contenir
+    form_class= ContenirForm
+    template_name = "monApp/create_contenir.html"
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        rayon = Rayon.objects.get(pk=self.kwargs['pk'])
+        context['rayon'] = rayon
+        return context
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        contenir = form.save()
+        if contenir.Qte <= 0:
+            contenir.delete()
+        return redirect('dtl_rayon', contenir.Rayon.idRayon)
+
+class ContenirUpdateView(UpdateView):
+    model = Contenir
+    fields = ['Qte']
+    template_name = "monApp/update_contenir.html"
+
+    def form_valid(self, form):
+        contenir = form.save()
+        if contenir.Qte <= 0:
+            contenir.delete()
+        return redirect('dtl_rayon', contenir.Rayon.idRayon)
+
+
+    def form_valid(self, form):
+        contenir = form.save()
+        return redirect('dtl_rayon', contenir.Rayon.idRayon)
+
+class ContenirDeleteView(DeleteView):
+    model = Contenir
+    template_name = "monApp/delete_contenir.html"
+
+    def get_success_url(self):
+        return reverse_lazy('dtl_rayon', args=[self.object.Rayon.idRayon])
 
 
 

@@ -1,0 +1,9 @@
+{% extends 'monApp/base.html' %}
+{% block contenu %}
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-success">Valider</button>
+    <a href="{% url 'dtl_rayon' rayon.idRayon %}" class="btn btn-info">Retour</a>
+</form>
+{% endblock %}

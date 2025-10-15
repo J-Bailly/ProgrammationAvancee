@@ -1,0 +1,13 @@
+{% extends 'monApp/base.html' %}
+
+{% block contenu %}
+<h2>Supprimer le produit du rayon ?</h2>
+<p>Produit : {{ object.Produit.intituleProd }}</p>
+<p>Quantité : {{ object.Qte }}</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Supprimer</button>
+    <a href="{% url 'dtl_rayon' object.Rayon.idRayon %}" class="btn btn-info">Annuler</a>
+</form>
+{% endblock %}
