@@ -3,24 +3,34 @@
         <h1> {{ titremenu }} </h1>
     {% endblock %}
     {% block contenu %}
+        <!-- Barre de recherche -->
+    <p class="lead mb-3 ml-0">Rechercher un élément...</p>
+    <form method="GET" action="">
+        <input class="form-control" type="text" name="search" placeholder="Tapez ici votre recherche"
+            value="{{ request.GET.search }}">
+        <button type="submit" class="btn btn-success mt-2">Rechercher</button>
+    </form>
+    <br>
     <table class="table">
-    <thead>
-        <th>Id</th>
-        <th>Nom rayon</th>
-    </thead>
-    <tbody>
-        {% for rayon in rayons %}
-        <tr>
-            <td><a href="{% url 'dtl_rayon' rayon.idRayon %}">{{ rayon.idRayon }}</a></td>
-            <td><a href="{% url 'dtl_rayon' rayon.idRayon %}">{{ rayon.nomRayon }}</a></td>
-            <td>
-                <a href="{% url 'dtl_rayon' rayon.idRayon %}" class="btn btn-primary mt-2">Détails</a>
-                <a href="{% url 'chng_rayon' rayon.idRayon %}" class="btn btn-warning mt-2">Modifier</a>
-                <a href="{% url 'dlt_rayon' rayon.idRayon %}" class="btn btn-danger mt-2">Supprimer</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
+        <thead>
+            <th>Id</th>
+            <th>Nom rayon</th>
+            <th>Valeur marchande du rayon</th>
+        </thead>
+        <tbody>
+            {% for data in ryns_dt %}
+                <tr>
+                    <td><a href="{% url 'dtl_rayon' data.rayon.idRayon %}">{{ data.rayon.idRayon }}</a></td>
+                    <td><a href="{% url 'dtl_rayon' data.rayon.idRayon %}">{{ data.rayon.nomRayon }}</a></td>
+                    <td><a href="{% url 'dtl_rayon' data.rayon.idRayon %}">{{ data.total_stock }} €</a></td>
+                    <td>
+                    <a href="{% url 'dtl_rayon' data.rayon.idRayon %}" class="btn btn-primary mt-2">Détails</a>
+                    <a href="{% url 'chng_rayon' data.rayon.idRayon %}" class="btn btn-warning mt-2">Modifier</a>
+                    <a href="{% url 'dlt_rayon' data.rayon.idRayon %}" class="btn btn-danger mt-2">Supprimer</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
     </table>
     <a href="{% url 'crt_rayon' %}" class="btn btn-primary mt-2">Créer un nouveau rayon</a>
 {% endblock %}
