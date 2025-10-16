@@ -524,11 +524,6 @@ class ContenirUpdateView(UpdateView):
             contenir.delete()
         return redirect('dtl_rayon', contenir.Rayon.idRayon)
 
-
-    def form_valid(self, form):
-        contenir = form.save()
-        return redirect('dtl_rayon', contenir.Rayon.idRayon)
-
 class ContenirDeleteView(DeleteView):
     model = Contenir
     template_name = "monApp/delete_contenir.html"
