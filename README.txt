@@ -11,3 +11,4 @@
 12eme séance : TP3 Fini + Fait TD4 jusqu'à l'amélioration du détail de catégorie à faire pour status 
 13eme séance : fait jusqu'a page 11 TD4 (barre de recherche)
 Travail maison : ContenirCreateView et ContenirDeleteView Reste a faire ContenirUpdateView TD4 page 12
+14eme séance : Debut TP4 page5 debut de test sur categorie
